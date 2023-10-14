@@ -25,3 +25,13 @@ WHERE discontinued = 1;
 
 -- Для 4-го пункта может потребоваться удаление ограничения, связанного с foreign_key.
 --Подумайте, как это можно решить, чтобы связь с таблицей order_details все же осталась.
+
+DELETE FROM order_details
+WHERE order_id IN(SELECT order_id
+				  FROM order_details
+				  LEFT JOIN products USING (product_id)
+				  WHERE products.product_name IS NULL
+);
+
+ALTER TABLE order_details
+ADD CONSTRAINT fk_order_details_products FOREIGN KEY(product_id) REFERENCES products(product_id)
